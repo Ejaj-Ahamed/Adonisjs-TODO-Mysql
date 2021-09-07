@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Adonis Task TODO</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <form action="/tasks" method="post">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="col-md-6 mt-3 mx-auto">
+            <input type="text" name="title" class="form-control" placeholder="Enter Task title">
+              {{ csrfField() }} 
+              @if(flashMessages.has('errors.title'))
+              <label class="text-danger">{{ flashMessages.get('errors.title') }}</label>
+              @endif
+
+            </div>
+        </div>
+        <div class="col-md-12">
+          <div class="col-md-6 mt-3 mx-auto">
+            <input type="submit" class="btn btn-success">
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="col-md-6 mt-3 mx-auto">
+            @if(flashMessages.has('successMsg'))
+            <label class="text-success">{{ flashMessages.get('successMsg') }}</label>
+            @endif
+            @if(flashMessages.has('errorMsg'))
+            <label class="text-danger">{{ flashMessages.get('errorMsg') }}</label>
+            @endif
+          </div>         
+        </div>
+      </div>
+    </form>
+    
+    <div class="col-md-12">
+      <div class="col-md-6 mt-3 mx-auto">
+        <table class="table">
+          <tbody>
+            @each(task in tasks)
+            <tr>
+              <td>
+                <form id="{{`form${task.id}`}}" action="{{`/tasks/${task.id}?_method=PATCH`}}" method="post">
+                {{ csrfField() }}
+                <label for="isCompleted" class="">
+                  <input type="checkbox" onchange="document.getElementById('{{`form${task.id}`}}').submit()" class="form-control" name="isCompleted" id="isCompleted" {{task.$extras.isCompleted? 'checked':''}}>
+                </label>
+                </form>
+              </td>
+              <td>
+                {{task.title}}
+              </td>
+              <td>
+                <form action="{{`/tasks/${task.id}?_method=DELETE`}}" method="post">
+                  {{ csrfField() }}
+                <button class="btn btn-danger btn-sm">D</button>
+                </form>
+              </td>
+            </tr>
+            @else
+            @endeach
+          </tbody>
+        </table>
+        
+      </div>         
+    </div>
+  </div>
+</body>
+</html>
